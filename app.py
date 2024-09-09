@@ -76,9 +76,9 @@ def add_game(form: GameSchema):
     return { "message": 'Jogo adicionado com sucesso' }, 200
 
 @app.delete('/game', tags=[game_collection_tag])
-def delete_game(game_id: GameDeleteSchema):
+def delete_game(query: GameDeleteSchema):
     session = Session()
-    response = session.query(GameCollection).filter_by(id = game_id).delete()
+    response = session.query(GameCollection).filter_by(id = query.id).delete()
     session.commit()
 
     if response:
@@ -92,9 +92,19 @@ def get_game_list(query: GameListSchema):
     return response.json(), 200
 
 @app.get('/platforms', tags=[rawg_api_tag])
-def get_plataforms():
+def get_platforms():
     response = requests.get(base_url+'/platforms', {"key": API_KEY})
-    return response.json(), 200
+
+    results = response.json()
+    platforms = []
+
+    for item in results['results']:
+        platforms.append({
+            "id": item['id'],
+            "name": item['name'],
+        })
+
+    return { "platforms": platforms } , 200
 
 @app.get('/game_status_list', tags=[game_status_tag])
 def get_game_status_list():
