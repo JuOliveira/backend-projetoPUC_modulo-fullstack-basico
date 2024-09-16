@@ -1,90 +1,59 @@
 from pydantic import BaseModel
-from typing import List
-from model.game_collection import GameCollection
-
-# from schemas import ComentarioSchema
-
-class GameListSchema(BaseModel):
-    query: str
+from typing import List, Optional
 
 class GameSchema(BaseModel):
+    """Representa o formato dos dados de um jogo quando é adicionado na coleção
+    """
     title: str
+    platform: str
+    release_date: Optional[str]
+    purchase_date: Optional[str]
+    is_favorite: bool
+    status: str
+    cover_art: Optional[str]
+
+class GameWithIDSchema(BaseModel):
+    """Representa o formato dos dados de um jogo como é armazendo no banco de dados com ID
+    """
+    id: int
+    title: str
+    platform: str
     release_date: str
     purchase_date: str
     is_favorite: bool
     status: str
     cover_art: str
 
-class GameDeleteSchema(BaseModel):
-    id: int
-
-# class ProdutoSchema(BaseModel):
-#     """ Define como um novo produto a ser inserido deve ser representado
-#     """
-#     nome: str = "Banana Prata"
-#     quantidade: Optional[int] = 12
-#     valor: float = 12.50
-
-
-# class ProdutoBuscaSchema(BaseModel):
-#     """ Define como deve ser a estrutura que representa a busca. Que será
-#         feita apenas com base no nome do produto.
-#     """
-#     nome: str = "Teste"
-
-
-# class ListagemProdutosSchema(BaseModel):
-#     """ Define como uma listagem de produtos será retornada.
-#     """
-#     produtos:List[ProdutoSchema]
-
-
-def list_games(game_collection: List[GameCollection]):
-    """ Retorna uma representação do produto seguindo o schema definido em
-        ProdutoViewSchema.
+class GameCollectionSchema(BaseModel):
+    """Representa o formato dos dados da coleção de jogos armazenada no banco de dados
     """
-    result = []
-    for game in game_collection:
-        result.append({
-            "id": game.id,
-            "title": game.title,
-            "release_date": game.release_date,
-            "purchase_date": game.purchase_date,
-            "is_favorite": game.is_favorite,
-            "status": game.status,
-            "cover_art": game.cover_art,
-        })
+    game_collection: List[GameWithIDSchema]
 
-    return {"game_collection": result}
+class GameDeleteSchema(BaseModel):
+    """Representa o formato dos dados usados para remover um jogo da coleção
+    """
+    id: int
+class GameListSchema(BaseModel):
+    """Representa o formato dos dados usados para realizar a busca de lista de jogos na biblioteca RAWG
+    """
+    query: str
 
+class GameSearchPlatformSchema(BaseModel):
+    """Representa o formato dos dados de uma plataforma retornada pela busca na biblioteca RAWG
+    """
+    id: int
+    name: str
+    slug: str
 
-# class ProdutoViewSchema(BaseModel):
-#     """ Define como um produto será retornado: produto + comentários.
-#     """
-#     id: int = 1
-#     nome: str = "Banana Prata"
-#     quantidade: Optional[int] = 12
-#     valor: float = 12.50
-#     total_cometarios: int = 1
-#     comentarios:List[ComentarioSchema]
+class GameSearchItemSchema(BaseModel):
+    """Representa o formato dos dados da lista de plataformas retornada pela busca na biblioteca RAWG
+    """
+    cover_art: Optional[str]
+    name: str
+    release_date: str
+    platforms: List[GameSearchPlatformSchema]
 
-
-# class ProdutoDelSchema(BaseModel):
-#     """ Define como deve ser a estrutura do dado retornado após uma requisição
-#         de remoção.
-#     """
-#     mesage: str
-#     nome: str
-
-# def apresenta_produto(produto: GameCollection):
-#     """ Retorna uma representação do produto seguindo o schema definido em
-#         ProdutoViewSchema.
-#     """
-#     return {
-#         "id": produto.id,
-#         "nome": produto.nome,
-#         "quantidade": produto.quantidade,
-#         "valor": produto.valor,
-#         "total_cometarios": len(produto.comentarios),
-#         "comentarios": [{"texto": c.texto} for c in produto.comentarios]
-#     }
+class GameSearchListSchema(BaseModel):
+    """Representa o formato dos dados da lista de jogos retornada pela busca na biblioteca RAWG
+    """
+    result: List[GameSearchItemSchema]

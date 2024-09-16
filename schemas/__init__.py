@@ -1,5 +1,5 @@
-# from schemas.comentario import ComentarioSchema
-# from schemas.game_collection import ProdutoSchema, ProdutoBuscaSchema, ProdutoViewSchema, \
-#                             ListagemProdutosSchema, ProdutoDelSchema, apresenta_produtos, \
-#                             apresenta_produto, apresenta_produtos
+from schemas.game_collection import GameSchema, GameListSchema, GameDeleteSchema, GameCollectionSchema, GameSearchListSchema
+from schemas.platforms import PlatformSchema, PlatformListSchema
+from schemas.game_status import GameStatusSchema, GameStatusListSchema
 from schemas.error import ErrorSchema
+
