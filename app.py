@@ -8,28 +8,19 @@ from schemas import *
 from flask_cors import CORS
 
 import requests
-import base64
-
-# from schemas.game_collection import GameListSchema, GameSchema, GameDeleteSchema
-
 
 info = Info(title="Minha API", version="1.0.0")
 app = OpenAPI(__name__, info=info)
 CORS(app)
 
 API_KEY = 'f2735556bb694a2190b3f83c59f5ba4c'
-base_url = 'https://api.rawg.io/api'
+BASE_URL = 'https://api.rawg.io/api'
 
 # definindo tags
 home_tag = Tag(name="Documentação", description="Seleção de documentação: Swagger, Redoc ou RapiDoc")
 game_collection_tag = Tag(name='Coleção de jogos', description='Adição, visualização e remoção de jogos da coleção no banco de dados')
 rawg_api_tag = Tag(name='Biblioteca RAWG', description='Busca de dados na biblioteca RAWG')
 game_status_tag = Tag(name='Status do jogo', description='Status de andamento do jogo')
-
-# conversão de url de imagem para base64
-def get_as_base64(url):
-    return base64.b64encode(requests.get(url).content).decode('utf-8')
-
 
 @app.get('/', tags=[home_tag])
 def home():
@@ -130,14 +121,14 @@ def get_game_list(query: GameListSchema):
     Retorna uma lista de possíveis jogos que podem satisfazer a busca feita
     """
 
-    response = requests.get(base_url+'/games', {"search": query, "key": API_KEY})
+    response = requests.get(BASE_URL +'/games', {"search": query, "key": API_KEY})
     results = response.json()
     search_result = []
 
     for result in results['results']:
         search_result.append({            
             'name': result['name'],
-            'cover_art': get_as_base64(result['background_image']),
+            'cover_art': result['background_image'],
             'platforms': result['platforms'],
             'release_date': result['released'],
         })
@@ -151,7 +142,7 @@ def get_platforms():
 
     Retorna a lista de plataformas
     """
-    response = requests.get(base_url+'/platforms', {"key": API_KEY})
+    response = requests.get(BASE_URL +'/platforms', {"key": API_KEY})
     results = response.json()
     platforms = []
 
